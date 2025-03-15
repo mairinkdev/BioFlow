@@ -1,103 +1,188 @@
-import Image from "next/image";
+'use client'
+
+import { useState, useEffect } from 'react'
+import { AnimatedBackground } from '@/components/ui/AnimatedBackground'
+import { ParallaxBackground } from '@/components/ui/ParallaxBackground'
+import { Profile } from '@/components/ui/Profile'
+import { LinkCard } from '@/components/ui/LinkCard'
+import { AudioControls } from '@/components/ui/AudioControls'
+import { AudioProvider } from '@/hooks/useAudioPlayer'
+import { profileData, socialLinks } from '@/lib/data'
+import { 
+  LinkedInIcon, 
+  GitHubIcon, 
+  InstagramIcon, 
+  TwitterIcon, 
+  YouTubeIcon, 
+  MailIcon, 
+  WebsiteIcon 
+} from '@/components/ui/Icons'
+import { motion, AnimatePresence } from 'framer-motion'
+import Image from 'next/image'
+
+// Mapeamento de ícones para links
+const iconMap: Record<string, React.ReactNode> = {
+  linkedin: <LinkedInIcon />,
+  github: <GitHubIcon />,
+  instagram: <InstagramIcon />,
+  twitter: <TwitterIcon />,
+  youtube: <YouTubeIcon />,
+  mail: <MailIcon />,
+  website: <WebsiteIcon />,
+}
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [showEasterEgg, setShowEasterEgg] = useState(false)
+  const [easterEggMessage, setEasterEggMessage] = useState('')
+  const [profileClicks, setProfileClicks] = useState(0)
+  const [activeCategory, setActiveCategory] = useState('all')
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  // Efeito para o Easter Egg do código Konami
+  useEffect(() => {
+    const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a']
+    let konamiIndex = 0
+
+    const checkKonami = (e: KeyboardEvent) => {
+      if (e.key === konamiCode[konamiIndex]) {
+        konamiIndex++
+        if (konamiIndex === konamiCode.length) {
+          setEasterEggMessage('🎮 Parabéns! Você descobriu o código Konami!')
+          setShowEasterEgg(true)
+          konamiIndex = 0
+          
+          // Esconder o Easter Egg após alguns segundos
+          setTimeout(() => {
+            setShowEasterEgg(false)
+          }, 5000)
+        }
+      } else {
+        konamiIndex = 0
+      }
+    }
+
+    window.addEventListener('keydown', checkKonami)
+    return () => {
+      window.removeEventListener('keydown', checkKonami)
+    }
+  }, [])
+
+  // Função para o Easter Egg de clique no perfil
+  const handleProfileClick = () => {
+    setProfileClicks(prev => {
+      const newCount = prev + 1
+      if (newCount === 5) {
+        setEasterEggMessage('👋 Você me clicou 5 vezes! Aqui está sua surpresa!')
+        setShowEasterEgg(true)
+        setTimeout(() => {
+          setShowEasterEgg(false)
+        }, 5000)
+        return 0
+      }
+      return newCount
+    })
+  }
+  
+  // Filtrar links por categoria
+  const filteredLinks = activeCategory === 'all' 
+    ? socialLinks 
+    : activeCategory === 'social' 
+      ? socialLinks.slice(0, 4) 
+      : socialLinks.slice(4)
+
+  return (
+    <AudioProvider>
+      <div className="min-h-screen">
+        <ParallaxBackground />
+        <AnimatedBackground />
+        
+        <div className="container max-w-4xl mx-auto pt-16 pb-8 px-4 relative z-20">
+          {/* Easter Egg popup */}
+          <AnimatePresence>
+            {showEasterEgg && (
+              <motion.div
+                initial={{ opacity: 0, y: -50 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -50 }}
+                className="fixed top-10 left-1/2 -translate-x-1/2 glass-effect text-white p-6 rounded-xl shadow-xl z-50 midnight-glow"
+              >
+                <p className="text-center">{easterEggMessage}</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          
+          {/* Perfil */}
+          <Profile 
+            name={profileData.name}
+            title={profileData.title}
+            description={profileData.description}
+            avatarUrl={profileData.avatarUrl}
+          />
+          
+          {/* Filtro de categorias */}
+          <motion.div 
+            className="mb-10 flex justify-center gap-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            <motion.button
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: "spring", stiffness: 300, damping: 15 }}
+              onClick={() => setActiveCategory('all')}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium glass-effect ${activeCategory === 'all' ? 'bg-primary text-white' : 'bg-card/50 text-muted-foreground hover:bg-card/80'}`}
+            >
+              Todos
+            </motion.button>
+            <motion.button
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: "spring", stiffness: 300, damping: 15 }}
+              onClick={() => setActiveCategory('social')}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium glass-effect ${activeCategory === 'social' ? 'bg-primary text-white' : 'bg-card/50 text-muted-foreground hover:bg-card/80'}`}
+            >
+              Redes Sociais
+            </motion.button>
+            <motion.button
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: "spring", stiffness: 300, damping: 15 }}
+              onClick={() => setActiveCategory('content')}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium glass-effect ${activeCategory === 'content' ? 'bg-primary text-white' : 'bg-card/50 text-muted-foreground hover:bg-card/80'}`}
+            >
+              Conteúdo & Contato
+            </motion.button>
+          </motion.div>
+          
+          {/* Links - Com transições animadas */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeCategory}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="mt-6"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {filteredLinks.map((link, index) => (
+                  <LinkCard
+                    key={`${activeCategory}-${index}`}
+                    title={link.title}
+                    url={link.url}
+                    description={link.description}
+                    color={link.color}
+                    icon={iconMap[link.icon]}
+                    index={index}
+                  />
+                ))}
+              </div>
+            </motion.div>
+          </AnimatePresence>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+        
+        <AudioControls />
+      </div>
+    </AudioProvider>
+  )
 }
