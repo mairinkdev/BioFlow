@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { AnimatedBackground } from '@/components/ui/AnimatedBackground'
 import { ParallaxBackground } from '@/components/ui/ParallaxBackground'
 import { Profile } from '@/components/ui/Profile'
