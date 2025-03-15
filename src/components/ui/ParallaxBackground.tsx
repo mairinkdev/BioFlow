@@ -3,8 +3,8 @@
 /**
  * ParallaxBackground.tsx
  * 
- * Este componente cria um efeito de fundo com paralaxe que responde ao scroll da página.
- * Redesenhado para usar apenas cores preto e midnight blue (azul meia-noite).
+ * This component creates a parallax background effect that responds to page scrolling.
+ * Redesigned to use only black and midnight blue colors.
  * 
  * @author BioFlow Team
  * @version 1.1.0
@@ -13,9 +13,9 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 
-// Dados para estrelas com posições fixas para evitar problemas de hidratação SSR/CSR
+// Star data with fixed positions to avoid SSR/CSR hydration issues
 const STAR_DATA = Array.from({ length: 40 }).map((_, i) => ({
-  // Usamos o índice para gerar valores diferentes mas determinísticos
+  // We use the index to generate different but deterministic values
   cx: `${(i * 2.5) % 100}%`,
   cy: `${(i * 3.5 + 10) % 100}%`,
   r: (i % 3) * 0.5 + 0.5,
@@ -26,28 +26,28 @@ export function ParallaxBackground() {
   const ref = useRef(null)
   const [isMounted, setIsMounted] = useState(false)
   
-  // Configuração do efeito de paralaxe com scroll
+  // Parallax scroll effect configuration
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"]
   })
   
-  // Transformações para as diferentes camadas (velocidades diferentes)
+  // Transformations for different layers (different speeds)
   const layer1Y = useTransform(scrollYProgress, [0, 1], [0, -100])
   const layer2Y = useTransform(scrollYProgress, [0, 1], [0, -200])
   const layer3Y = useTransform(scrollYProgress, [0, 1], [0, -300])
   
-  // Garantir hidratação correta ativando somente no cliente
+  // Ensure correct hydration by activating only on the client
   useEffect(() => {
     setIsMounted(true)
   }, [])
   
   return (
     <div ref={ref} className="fixed inset-0 -z-10 overflow-hidden">
-      {/* Camada de fundo estática - preto puro */}
+      {/* Static background layer - pure black */}
       <div className="absolute inset-0 bg-black" />
       
-      {/* Camadas de paralaxe */}
+      {/* Parallax layers */}
       <motion.div 
         style={{ y: layer3Y }}
         className="absolute inset-0 parallax-layer"
@@ -62,8 +62,8 @@ export function ParallaxBackground() {
             </defs>
             <rect x="0" y="0" width="100%" height="100%" fill="url(#stars1)" />
             
-            {/* Renderizamos estrelas somente após a montagem no cliente 
-                para evitar problemas de hidratação */}
+            {/* We render stars only after client-side mounting 
+                to avoid hydration issues */}
             {isMounted && STAR_DATA.map((star, i) => (
               <circle
                 key={i}
@@ -78,7 +78,7 @@ export function ParallaxBackground() {
         </div>
       </motion.div>
       
-      {/* Camada intermediária com efeitos de midnight blue sutis */}
+      {/* Middle layer with subtle midnight blue effects */}
       <motion.div 
         style={{ y: layer2Y }}
         className="absolute inset-0 parallax-layer"
@@ -87,7 +87,7 @@ export function ParallaxBackground() {
         <div className="absolute bottom-40 right-20 w-80 h-80 rounded-full bg-[#4263eb]/5 blur-3xl opacity-15" />
       </motion.div>
       
-      {/* Camada frontal com efeitos nebulosos menores */}
+      {/* Front layer with smaller nebulous effects */}
       <motion.div 
         style={{ y: layer1Y }}
         className="absolute inset-0 parallax-layer"

@@ -20,7 +20,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 
-// Mapeamento de ícones para links
+// Icon mapping for links
 const iconMap: Record<string, React.ReactNode> = {
   linkedin: <LinkedInIcon />,
   github: <GitHubIcon />,
@@ -37,7 +37,7 @@ export default function Home() {
   const [profileClicks, setProfileClicks] = useState(0)
   const [activeCategory, setActiveCategory] = useState('all')
 
-  // Efeito para o Easter Egg do código Konami
+  // Effect for Konami Code Easter Egg
   useEffect(() => {
     const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a']
     let konamiIndex = 0
@@ -46,11 +46,11 @@ export default function Home() {
       if (e.key === konamiCode[konamiIndex]) {
         konamiIndex++
         if (konamiIndex === konamiCode.length) {
-          setEasterEggMessage('🎮 Parabéns! Você descobriu o código Konami!')
+          setEasterEggMessage('🎮 You found the Konami code! Congratulations!')
           setShowEasterEgg(true)
           konamiIndex = 0
           
-          // Esconder o Easter Egg após alguns segundos
+          // Hide Easter Egg after a few seconds
           setTimeout(() => {
             setShowEasterEgg(false)
           }, 5000)
@@ -66,12 +66,12 @@ export default function Home() {
     }
   }, [])
 
-  // Função para o Easter Egg de clique no perfil
+  // Function for profile click Easter Egg
   const handleProfileClick = () => {
     setProfileClicks(prev => {
       const newCount = prev + 1
       if (newCount === 5) {
-        setEasterEggMessage('👋 Você me clicou 5 vezes! Aqui está sua surpresa!')
+        setEasterEggMessage('👋 You clicked me 5 times! Here is your surprise!')
         setShowEasterEgg(true)
         setTimeout(() => {
           setShowEasterEgg(false)
@@ -82,7 +82,7 @@ export default function Home() {
     })
   }
   
-  // Filtrar links por categoria
+  // Filter links by category
   const filteredLinks = activeCategory === 'all' 
     ? socialLinks 
     : activeCategory === 'social' 
@@ -110,7 +110,7 @@ export default function Home() {
             )}
           </AnimatePresence>
           
-          {/* Perfil */}
+          {/* Profile */}
           <Profile 
             name={profileData.name}
             title={profileData.title}
@@ -118,7 +118,7 @@ export default function Home() {
             avatarUrl={profileData.avatarUrl}
           />
           
-          {/* Filtro de categorias */}
+          {/* Category filters */}
           <motion.div 
             className="mb-10 flex justify-center gap-4"
             initial={{ opacity: 0, y: 20 }}
@@ -132,7 +132,7 @@ export default function Home() {
               onClick={() => setActiveCategory('all')}
               className={`px-4 py-1.5 rounded-full text-sm font-medium glass-effect ${activeCategory === 'all' ? 'bg-primary text-white' : 'bg-card/50 text-muted-foreground hover:bg-card/80'}`}
             >
-              Todos
+              All
             </motion.button>
             <motion.button
               whileHover={{ y: -2 }}
@@ -141,7 +141,7 @@ export default function Home() {
               onClick={() => setActiveCategory('social')}
               className={`px-4 py-1.5 rounded-full text-sm font-medium glass-effect ${activeCategory === 'social' ? 'bg-primary text-white' : 'bg-card/50 text-muted-foreground hover:bg-card/80'}`}
             >
-              Redes Sociais
+              Social Media
             </motion.button>
             <motion.button
               whileHover={{ y: -2 }}
@@ -150,11 +150,11 @@ export default function Home() {
               onClick={() => setActiveCategory('content')}
               className={`px-4 py-1.5 rounded-full text-sm font-medium glass-effect ${activeCategory === 'content' ? 'bg-primary text-white' : 'bg-card/50 text-muted-foreground hover:bg-card/80'}`}
             >
-              Conteúdo & Contato
+              Content & Contact
             </motion.button>
           </motion.div>
           
-          {/* Links - Com transições animadas */}
+          {/* Links - With animated transitions */}
           <AnimatePresence mode="wait">
             <motion.div
               key={activeCategory}

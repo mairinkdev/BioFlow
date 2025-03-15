@@ -14,9 +14,9 @@ interface ProfileProps {
 /**
  * Profile.tsx
  * 
- * Componente que renderiza o perfil do usuário com efeitos interativos.
- * A foto de perfil tem uma animação suave ao passar o mouse e um efeito de "coin flip" ao clicar,
- * redirecionando para o repositório do GitHub.
+ * Component that renders the user profile with interactive effects.
+ * The profile picture has a smooth hover animation and a "coin flip" effect when clicked,
+ * redirecting to the GitHub repository.
  * 
  * @author BioFlow Team
  * @version 1.1.0
@@ -26,16 +26,16 @@ export function Profile({ name, title, description, avatarUrl }: ProfileProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [isFlipping, setIsFlipping] = useState(false)
   
-  // Função para redirecionar ao repositório do GitHub quando clicar na foto
+  // Function to redirect to GitHub repository when clicking on the photo
   const handleAvatarClick = () => {
-    // Ativar a animação de flip
+    // Activate flip animation
     setIsFlipping(true)
     
-    // Aguardar a animação terminar antes de redirecionar
+    // Wait for animation to finish before redirecting
     setTimeout(() => {
       window.open('https://github.com/mairinkdev/BioFlow', '_blank')
       
-      // Resetar o estado após redirecionar
+      // Reset state after redirecting
       setTimeout(() => {
         setIsFlipping(false)
       }, 500)
@@ -47,7 +47,7 @@ export function Profile({ name, title, description, avatarUrl }: ProfileProps) {
       ref={containerRef}
       className="flex flex-col items-center text-center mb-16 px-4 py-8 relative z-10"
     >
-      {/* Avatar com efeito hover suave e flip ao clicar */}
+      {/* Avatar with smooth hover effect and flip on click */}
       <motion.div 
         className="relative profile-avatar mb-10 cursor-pointer"
         whileHover={{ scale: 1.05 }}
@@ -62,10 +62,10 @@ export function Profile({ name, title, description, avatarUrl }: ProfileProps) {
         }}
         onClick={handleAvatarClick}
       >
-        {/* Fundo escuro para contraste */}
+        {/* Dark background for contrast */}
         <div className="absolute -inset-4 bg-[#000000] rounded-full opacity-60"></div>
         
-        {/* Container da imagem do avatar */}
+        {/* Avatar image container */}
         <div className="relative z-10 midnight-glow rounded-full p-1 bg-gradient-to-br from-primary-light/15 to-secondary/15 glass-effect">
           <Image
             src={avatarUrl}
@@ -78,7 +78,7 @@ export function Profile({ name, title, description, avatarUrl }: ProfileProps) {
         </div>
       </motion.div>
 
-      {/* Textos do perfil */}
+      {/* Profile text */}
       <div className="profile-text space-y-3 z-10 relative">
         <motion.h1 
           className="text-4xl font-bold bg-gradient-to-r from-primary-light via-primary to-secondary bg-clip-text text-transparent"
@@ -102,7 +102,7 @@ export function Profile({ name, title, description, avatarUrl }: ProfileProps) {
         </motion.p>
       </div>
       
-      {/* Decoração de linha inferior */}
+      {/* Bottom decoration line */}
       <motion.div 
         className="mt-8 w-16 h-1 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-full"
         initial={{ width: 0 }}

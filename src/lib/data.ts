@@ -15,7 +15,7 @@ interface LinkData {
 
 export const profileData: ProfileData = {
   name: 'Arthur Mairink',
-  title: 'Full Stack Developer & Cybersecutiy Practiconer',
+  title: 'Full Stack Developer & Cybersecurity Practitioner',
   description: '',
   avatarUrl: '/images/profile.jpg',
 }
@@ -23,67 +23,60 @@ export const profileData: ProfileData = {
 export const socialLinks: LinkData[] = [
   {
     title: 'LinkedIn',
-    url: 'https://linkedin.com/in/seuperfil',
-    description: 'Conexões profissionais e atualizações de carreira',
+    url: 'https://www.linkedin.com/in/arthur-mairink/',
+    description: 'Professional connections and career updates',
     color: 'bg-[#0077B5]',
     icon: 'linkedin'
   },
   {
     title: 'GitHub',
-    url: 'https://github.com/seuusuario',
-    description: 'Projetos e contribuições open-source',
+    url: 'https://github.com/mairinkdev',
+    description: 'Projects and open-source contributions',
     color: 'bg-[#171515]',
     icon: 'github'
   },
   {
     title: 'Instagram',
-    url: 'https://instagram.com/seuusuario',
-    description: 'Fotos e momentos do dia a dia',
+    url: 'https://www.instagram.com/mairinkdev/',
+    description: 'Photos and everyday moments',
     color: 'bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#FCAF45]',
     icon: 'instagram'
   },
   {
-    title: 'Twitter',
-    url: 'https://twitter.com/seuusuario',
-    description: 'Pensamentos e atualizações rápidas',
-    color: 'bg-[#1DA1F2]',
-    icon: 'twitter'
-  },
-  {
     title: 'YouTube',
-    url: 'https://youtube.com/@seucanal',
-    description: 'Tutoriais e conteúdo em vídeo',
+    url: 'https://www.youtube.com/@mairinkfr',
+    description: 'Tutorials and video content',
     color: 'bg-[#FF0000]',
     icon: 'youtube'
   },
   {
-    title: 'Portfólio',
-    url: 'https://seuportfolio.com',
-    description: 'Meus trabalhos e projetos recentes',
+    title: 'Portfolio',
+    url: 'https://mairink.vercel.app',
+    description: 'My recent work and projects',
     color: 'bg-gradient-to-r from-[#4F46E5] to-[#06B6D4]',
     icon: 'website'
   },
   {
     title: 'Email',
-    url: 'mailto:seuemail@exemplo.com',
-    description: 'Entre em contato diretamente',
+    url: 'mailto:arthur@mairink.com.br',
+    description: 'Contact me directly',
     color: 'bg-[#EA4335]',
     icon: 'mail'
   },
 ]
 
-// Easter eggs - mensagens escondidas que aparecem em certas condições
+// Easter eggs - hidden messages that appear under certain conditions
 export const easterEggs = [
   {
     trigger: 'konami',
-    message: 'Você encontrou um easter egg! 🎮 O código Konami é sempre a resposta.',
+    message: 'You found an easter egg! 🎮 The Konami code is always the answer.',
   },
   {
     trigger: 'click-profile',
-    message: 'Bom te ver por aqui! 👋 Clique mais 5 vezes para uma surpresa.',
+    message: 'Nice to see you here! 👋 Click 5 more times for a surprise.',
   },
   {
     trigger: 'scroll-bottom',
-    message: 'Você chegou até o fim! 🚀 O segredo está em continuar scrollando...',
+    message: 'You made it to the end! 🚀 The secret is to keep scrolling...',
   },
 ] 

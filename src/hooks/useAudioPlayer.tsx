@@ -3,8 +3,8 @@
 /**
  * useAudioPlayer.tsx
  * 
- * Hook e provedor de contexto para reprodução de áudio na aplicação.
- * Gerencia estado de reprodução, volume e interface para o player de áudio.
+ * Hook and context provider for audio playback in the application.
+ * Manages playback state, volume, and interface for the audio player.
  * 
  * @author BioFlow Team
  * @version 1.0.0
@@ -13,7 +13,7 @@
 import React, { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react'
 import ReactHowler from 'react-howler'
 
-// Define a interface do contexto de áudio
+// Define the audio context interface
 interface AudioContextType {
   isPlaying: boolean
   togglePlay: () => void
@@ -24,39 +24,39 @@ interface AudioContextType {
   tracks: string[]
 }
 
-// Lista de faixas disponíveis (apenas uma por enquanto)
+// List of available tracks (only one for now)
 const defaultTracks = ['/audio/tore up.mp3']
 
-// Criação do contexto
+// Context creation
 const AudioContext = createContext<AudioContextType | undefined>(undefined)
 
 /**
- * Provedor de contexto de áudio que encapsula a funcionalidade do player
+ * Audio context provider that encapsulates player functionality
  * 
- * @param {ReactNode} children - Componentes filhos que terão acesso ao contexto
+ * @param {ReactNode} children - Child components that will have access to the context
  */
 export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Estado local para controle do player
+  // Local state for player control
   const [isPlaying, setIsPlaying] = useState(false)
   const [volume, setVolume] = useState(0.5)
   const [currentTrack, setCurrentTrack] = useState(defaultTracks[0])
   const [tracks] = useState<string[]>(defaultTracks)
   const playerRef = useRef<ReactHowler | null>(null)
 
-  // Alterna entre tocar e pausar
+  // Toggle between play and pause
   const togglePlay = () => {
     setIsPlaying((prev) => !prev)
   }
 
-  // Troca a faixa atual (se existir na lista)
+  // Change the current track (if it exists in the list)
   const changeTrack = (track: string) => {
     if (tracks.includes(track)) {
       setCurrentTrack(track)
     }
   }
 
-  // Autoplay com política de permissão do navegador
-  // Só inicia após interação do usuário
+  // Autoplay with browser permission policy
+  // Only starts after user interaction
   useEffect(() => {
     const handleInteraction = () => {
       if (!isPlaying) {
@@ -83,7 +83,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         tracks,
       }}
     >
-      {/* Componente ReactHowler para reprodução de áudio */}
+      {/* ReactHowler component for audio playback */}
       <ReactHowler
         src={currentTrack}
         playing={isPlaying}
@@ -99,10 +99,10 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 }
 
 /**
- * Hook para acessar o contexto de áudio
+ * Hook to access the audio context
  * 
- * @returns {AudioContextType} Interface de controle do player
- * @throws {Error} Erro se usado fora do AudioProvider
+ * @returns {AudioContextType} Player control interface
+ * @throws {Error} Error if used outside AudioProvider
  */
 export const useAudioPlayer = (): AudioContextType => {
   const context = useContext(AudioContext)

@@ -3,8 +3,8 @@
 /**
  * AudioControls.tsx
  * 
- * Componente de controle de áudio com novo design minimalista elegante.
- * Utiliza apenas cores preto e midnight blue para harmonia visual.
+ * Audio control component with elegant minimalist design.
+ * Uses only black and midnight blue colors for visual harmony.
  * 
  * @author BioFlow Team
  * @version 2.0.0
@@ -15,14 +15,14 @@ import { useAudioPlayer } from '@/hooks/useAudioPlayer'
 import { motion, AnimatePresence } from 'framer-motion'
 
 export function AudioControls() {
-  // Obtendo estado e funções do hook de áudio
+  // Getting state and functions from audio hook
   const { isPlaying, togglePlay, volume, setVolume } = useAudioPlayer()
   
-  // Estado local para controle de visibilidade
+  // Local state for visibility control
   const [isVisible, setIsVisible] = useState(false)
   const [isVolumeVisible, setIsVolumeVisible] = useState(false)
 
-  // Efeito para mostrar o controle com delay para uma entrada suave
+  // Effect to show the control with delay for a smooth entrance
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(true)
@@ -31,7 +31,7 @@ export function AudioControls() {
     return () => clearTimeout(timer)
   }, [])
 
-  // Handler para atualização do volume
+  // Handler for volume update
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setVolume(parseFloat(e.target.value))
   }
@@ -44,15 +44,15 @@ export function AudioControls() {
       className="fixed bottom-6 right-6 z-50"
     >
       <div className="relative">
-        {/* Botão principal de música - design minimalista */}
+        {/* Main music button - minimalist design */}
         <motion.button
           onClick={togglePlay}
           className="block w-14 h-14 rounded-full bg-black border border-[#4263eb]/30 shadow-lg relative overflow-hidden"
           whileHover={{ scale: 1.05, borderColor: "rgba(66, 99, 235, 0.6)" }}
           whileTap={{ scale: 0.97 }}
-          aria-label={isPlaying ? 'Pausar música' : 'Tocar música'}
+          aria-label={isPlaying ? 'Pause music' : 'Play music'}
         >
-          {/* Fundo com onda de áudio animada */}
+          {/* Background with animated audio wave */}
           <div className="absolute inset-0 flex items-center justify-center">
             <motion.div 
               className="absolute inset-0 bg-gradient-to-r from-[#121212] to-[#050a18]"
@@ -67,7 +67,7 @@ export function AudioControls() {
               }}
             />
             
-            {/* Ondas de áudio animadas */}
+            {/* Animated audio waves */}
             {isPlaying && (
               <div className="absolute inset-0 flex items-center justify-center">
                 <motion.div 
@@ -97,7 +97,7 @@ export function AudioControls() {
               </div>
             )}
             
-            {/* Ícone central */}
+            {/* Center icon */}
             <motion.div
               className="relative z-10 text-white/90"
               animate={{ 
@@ -123,7 +123,7 @@ export function AudioControls() {
             </motion.div>
           </div>
           
-          {/* Brilho circular externo */}
+          {/* External circular glow */}
           <motion.div 
             className="absolute -inset-1 rounded-full"
             animate={{ 
@@ -143,7 +143,7 @@ export function AudioControls() {
           />
         </motion.button>
         
-        {/* Popup do volume ao passar o mouse */}
+        {/* Volume popup on hover */}
         <AnimatePresence>
           {isVisible && (
             <motion.div

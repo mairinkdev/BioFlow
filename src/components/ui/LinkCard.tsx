@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 
 interface LinkCardProps {
@@ -15,6 +15,7 @@ interface LinkCardProps {
 
 export function LinkCard({ title, url, icon, description, color = 'bg-primary', index }: LinkCardProps) {
   const [isHovered, setIsHovered] = useState(false)
+  const [showCopyMessage, setShowCopyMessage] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
   
   // Configuração do efeito 3D de movimento
@@ -48,6 +49,31 @@ export function LinkCard({ title, url, icon, description, color = 'bg-primary', 
     setIsHovered(false)
   }
 
+  const handleEmailClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    // Verificar se o título é "Email"
+    if (title === 'Email') {
+      e.preventDefault() // Impedir comportamento padrão do link
+      
+      // Extrair o email do mailto: url
+      const email = url.replace('mailto:', '')
+      
+      // Copiar o email para a área de transferência
+      navigator.clipboard.writeText(email)
+        .then(() => {
+          // Mostrar mensagem de sucesso
+          setShowCopyMessage(true)
+          
+          // Esconder a mensagem após 3 segundos
+          setTimeout(() => {
+            setShowCopyMessage(false)
+          }, 3000)
+        })
+        .catch(err => {
+          console.error('Falha ao copiar: ', err)
+        })
+    }
+  }
+
   return (
     <motion.div
       ref={cardRef}
@@ -72,6 +98,7 @@ export function LinkCard({ title, url, icon, description, color = 'bg-primary', 
         target="_blank" 
         rel="noopener noreferrer" 
         className={`block relative overflow-hidden ${color} rounded-xl p-5 shadow-lg hover:shadow-xl transition-all duration-300 midnight-glow midnight-card`}
+        onClick={handleEmailClick}
       >
         <motion.div
           animate={{ 
@@ -147,6 +174,21 @@ export function LinkCard({ title, url, icon, description, color = 'bg-primary', 
           </svg>
         </motion.div>
       </Link>
+
+      {/* Mensagem de cópia para área de transferência */}
+      <AnimatePresence>
+        {showCopyMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full mt-[-10px] bg-gradient-to-r from-primary to-secondary py-2 px-4 rounded-lg shadow-xl z-50"
+          >
+            <div className="text-white text-sm font-medium">Email copied to clipboard!</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   )
 } 
