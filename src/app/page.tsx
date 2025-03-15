@@ -18,7 +18,6 @@ import {
   WebsiteIcon 
 } from '@/components/ui/Icons'
 import { motion, AnimatePresence } from 'framer-motion'
-import Image from 'next/image'
 
 // Icon mapping for links
 const iconMap: Record<string, React.ReactNode> = {
@@ -32,56 +31,8 @@ const iconMap: Record<string, React.ReactNode> = {
 }
 
 export default function Home() {
-  const [showEasterEgg, setShowEasterEgg] = useState(false)
-  const [easterEggMessage, setEasterEggMessage] = useState('')
-  const [profileClicks, setProfileClicks] = useState(0)
   const [activeCategory, setActiveCategory] = useState('all')
 
-  // Effect for Konami Code Easter Egg
-  useEffect(() => {
-    const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a']
-    let konamiIndex = 0
-
-    const checkKonami = (e: KeyboardEvent) => {
-      if (e.key === konamiCode[konamiIndex]) {
-        konamiIndex++
-        if (konamiIndex === konamiCode.length) {
-          setEasterEggMessage('🎮 You found the Konami code! Congratulations!')
-          setShowEasterEgg(true)
-          konamiIndex = 0
-          
-          // Hide Easter Egg after a few seconds
-          setTimeout(() => {
-            setShowEasterEgg(false)
-          }, 5000)
-        }
-      } else {
-        konamiIndex = 0
-      }
-    }
-
-    window.addEventListener('keydown', checkKonami)
-    return () => {
-      window.removeEventListener('keydown', checkKonami)
-    }
-  }, [])
-
-  // Function for profile click Easter Egg
-  const handleProfileClick = () => {
-    setProfileClicks(prev => {
-      const newCount = prev + 1
-      if (newCount === 5) {
-        setEasterEggMessage('👋 You clicked me 5 times! Here is your surprise!')
-        setShowEasterEgg(true)
-        setTimeout(() => {
-          setShowEasterEgg(false)
-        }, 5000)
-        return 0
-      }
-      return newCount
-    })
-  }
-  
   // Filter links by category
   const filteredLinks = activeCategory === 'all' 
     ? socialLinks 
@@ -96,20 +47,6 @@ export default function Home() {
         <AnimatedBackground />
         
         <div className="container max-w-4xl mx-auto pt-16 pb-8 px-4 relative z-20">
-          {/* Easter Egg popup */}
-          <AnimatePresence>
-            {showEasterEgg && (
-              <motion.div
-                initial={{ opacity: 0, y: -50 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -50 }}
-                className="fixed top-10 left-1/2 -translate-x-1/2 glass-effect text-white p-6 rounded-xl shadow-xl z-50 midnight-glow"
-              >
-                <p className="text-center">{easterEggMessage}</p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-          
           {/* Profile */}
           <Profile 
             name={profileData.name}

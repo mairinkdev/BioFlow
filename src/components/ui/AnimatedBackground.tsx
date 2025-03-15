@@ -1,15 +1,16 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
+
+// Remover o gsap se não estiver utilizando
+// import { gsap } from 'gsap'
 
 export function AnimatedBackground() {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
   
   useEffect(() => {
     const canvas = canvasRef.current
-    if (!canvas) return
-    
+    if (!canvas) return // Verifica se o canvas é null antes de acessá-lo
     const ctx = canvas.getContext('2d')
     if (!ctx) return
     
@@ -43,11 +44,12 @@ export function AnimatedBackground() {
         this.x += this.speedX
         this.y += this.speedY
         
-        if (this.x < 0 || this.x > canvas.width) {
+        // Garantindo que canvas não é nulo antes de acessar suas propriedades
+        if (this.x < 0 || (canvas && this.x > canvas.width)) {
           this.speedX = -this.speedX
         }
         
-        if (this.y < 0 || this.y > canvas.height) {
+        if (this.y < 0 || (canvas && this.y > canvas.height)) {
           this.speedY = -this.speedY
         }
       }
@@ -71,6 +73,9 @@ export function AnimatedBackground() {
     }
     
     const init = () => {
+      // Canvas já foi verificado no início do useEffect, mas TypeScript precisa desta validação
+      if (!canvas) return
+      
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
       
@@ -83,7 +88,7 @@ export function AnimatedBackground() {
     }
     
     const animate = () => {
-      if (!ctx) return
+      if (!ctx || !canvas) return
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       
       particles.forEach(particle => {
@@ -108,17 +113,9 @@ export function AnimatedBackground() {
           const distance = Math.sqrt(dx * dx + dy * dy)
           
           if (distance < maxDistance) {
-            // Opacidade baseada na distância
-            const opacity = 1 - (distance / maxDistance)
-            const gradient = ctx.createLinearGradient(
-              particles[i].x, particles[i].y, 
-              particles[j].x, particles[j].y
-            )
-            gradient.addColorStop(0, `rgba(139, 92, 246, ${opacity * 0.15})`)
-            gradient.addColorStop(1, `rgba(45, 212, 191, ${opacity * 0.15})`)
-            
-            ctx.strokeStyle = gradient
-            ctx.lineWidth = 0.6
+            const opacity = 1 - distance / maxDistance
+            ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`
+            ctx.lineWidth = 0.5
             ctx.beginPath()
             ctx.moveTo(particles[i].x, particles[i].y)
             ctx.lineTo(particles[j].x, particles[j].y)
@@ -128,24 +125,13 @@ export function AnimatedBackground() {
       }
     }
     
-    const handleResize = () => {
-      init()
-    }
-    
-    window.addEventListener('resize', handleResize)
     init()
     animate()
     
     return () => {
-      window.removeEventListener('resize', handleResize)
       cancelAnimationFrame(animationFrameId)
     }
   }, [])
   
-  return (
-    <canvas 
-      ref={canvasRef} 
-      className="fixed inset-0 -z-10 w-full h-full opacity-30 dark:opacity-40"
-    />
-  )
-} 
+  return <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full z-0" />
+}
