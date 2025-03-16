@@ -7,7 +7,7 @@
  * Uses only black and midnight blue colors for visual harmony.
  * 
  * @author BioFlow Team
- * @version 2.1.0
+ * @version 2.2.0
  */
 
 import { useState, useEffect } from 'react'
@@ -22,6 +22,7 @@ export function AudioControls() {
   const [isVisible, setIsVisible] = useState(false)
   const [isVolumeVisible, setIsVolumeVisible] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
+  const [isInitialized, setIsInitialized] = useState(false)
 
   // Effect to show the control with delay for a smooth entrance
   useEffect(() => {
@@ -31,6 +32,14 @@ export function AudioControls() {
 
     return () => clearTimeout(timer)
   }, [])
+
+  // Função para lidar com a reprodução e inicialização do áudio
+  const handleTogglePlay = () => {
+    togglePlay();
+    if (!isInitialized) {
+      setIsInitialized(true);
+    }
+  }
 
   // Handler for volume update
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,7 +64,7 @@ export function AudioControls() {
       <div className="relative">
         {/* Main music button - minimalist design */}
         <motion.button
-          onClick={togglePlay}
+          onClick={handleTogglePlay}
           onHoverStart={() => setIsHovered(true)}
           onHoverEnd={() => setIsHovered(false)}
           className="block w-14 h-14 rounded-full bg-black border border-blue-600/30 shadow-lg relative overflow-hidden"
@@ -66,8 +75,8 @@ export function AudioControls() {
           }}
           whileTap={{ scale: 0.97 }}
           animate={{ 
-            scale: isReady ? 1 : 0.98,
-            opacity: isReady ? 1 : 0.7 
+            scale: isReady || isInitialized ? 1 : 0.98,
+            opacity: isReady || isInitialized ? 1 : 0.7 
           }}
           transition={springTransition}
           aria-label={isPlaying ? 'Pause music' : 'Play music'}
@@ -86,12 +95,12 @@ export function AudioControls() {
               transition={{ 
                 duration: 2, 
                 repeat: isPlaying ? Infinity : 0,
-                ease: "easeInOut",
-                repeatType: "reverse"
+                repeatType: "reverse",
+                ease: "easeInOut" 
               }}
             />
             
-            {/* Animated audio waves with improved animation */}
+            {/* Animated audio waves */}
             <AnimatePresence>
               {isPlaying && (
                 <motion.div 
@@ -121,6 +130,30 @@ export function AudioControls() {
                       />
                     ))}
                   </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Mensagem de inicialização quando o usuário clica pela primeira vez */}
+            <AnimatePresence>
+              {isInitialized && !isReady && (
+                <motion.div 
+                  className="absolute inset-0 flex items-center justify-center"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <motion.div 
+                    className="text-[8px] text-blue-400/80 font-medium"
+                    animate={{ opacity: [0.6, 1, 0.6] }}
+                    transition={{ 
+                      duration: 1.5, 
+                      repeat: Infinity 
+                    }}
+                  >
+                    Inicializando...
+                  </motion.div>
                 </motion.div>
               )}
             </AnimatePresence>
