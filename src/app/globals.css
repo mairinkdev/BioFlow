@@ -1,85 +1,47 @@
 /**
  * globals.css
  * 
- * Arquivo de estilos globais da aplicação BioFlow
- * Inclui as definições de cores, temas e utilitários comuns
+ * Global styles for BioFlow application
+ * Redesigned with a minimal and clean aesthetic inspired by e-z.bio
  * 
- * @author BioFlow Team
- * @version 1.0.0
+ * @version 2.0.0
  */
 
 @import "tailwindcss";
 
-/* Variáveis de cores e temas base */
+/* Base color variables */
 :root {
-  --primary: #4263eb; /* Midnight blue mais escuro */
-  --primary-light: #5c7cfa; /* Midnight blue mais claro */
-  --primary-dark: #3b5bdb; /* Midnight blue ainda mais escuro */
-  --secondary: #0c8599; /* Azul escuro complementar */
-  --accent: #ae3ec9; /* Roxo escuro para acentos */
-  /* Tema mais escuro com preto/midnight blue */
-  --background: #000000; /* Preto puro */
-  --foreground: #e2e8f0;
-  --card: #050a18; /* Card ainda mais escuro, quase preto com tom azulado */
-  --card-foreground: #f8fafc;
-  --border: #0d1631; /* Borda midnight blue escuro */
-  --muted: #050a18; /* Escuro com leve tom azulado */
-  --muted-foreground: #94a3b8;
+  --primary: #4263eb; /* Midnight blue */
+  --primary-light: #5c7cfa;
+  --primary-dark: #3b5bdb;
+  --secondary: #0c8599;
+  
+  /* Clean, minimal theme */
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #111111;
+  --card-foreground: #ffffff;
+  --border: #333333;
+  --muted: #222222;
+  --muted-foreground: #888888;
 }
 
-/* Aplicação do tema inline */
-@theme inline {
-  --color-primary: var(--primary);
-  --color-primary-light: var(--primary-light);
-  --color-primary-dark: var(--primary-dark);
-  --color-secondary: var(--secondary);
-  --color-accent: var(--accent);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-border: var(--border);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --font-sans: var(--font-inter);
-  --font-mono: var(--font-jetbrains-mono);
-}
-
-/* Configuração específica para modo escuro */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --primary: #4263eb; /* Midnight blue mais escuro */
-    --primary-light: #5c7cfa; /* Midnight blue mais claro */
-    --primary-dark: #3b5bdb; /* Midnight blue ainda mais escuro */
-    --secondary: #0c8599; /* Azul escuro complementar */
-    --accent: #ae3ec9; /* Roxo escuro para acentos */
-    /* Tema mais escuro com preto/midnight blue */
-    --background: #000000; /* Preto puro */
-    --foreground: #f8fafc;
-    --card: #050a18; /* Card ainda mais escuro, quase preto com tom azulado */
-    --card-foreground: #f8fafc;
-    --border: #0d1631; /* Borda midnight blue escuro */
-    --muted: #050a18; /* Escuro com leve tom azulado */
-    --muted-foreground: #94a3b8;
-  }
-}
-
-/* Estilos base */
+/* Base styles */
 @layer base {
   * {
-    @apply antialiased border-border;
+    @apply antialiased;
   }
   
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-black text-white font-sans;
   }
 
   ::selection {
-    @apply bg-primary/30 text-foreground;
+    @apply bg-blue-600/30 text-white;
   }
 }
 
-/* Utilitários */
+/* Utilities */
 @layer utilities {
   .flow-hide-scrollbar {
     -ms-overflow-style: none;
@@ -91,43 +53,26 @@
   }
 }
 
-/* Componentes reutilizáveis */
+/* Components */
 @layer components {
-  /* Efeito de brilho com sombra */
-  .midnight-glow {
-    box-shadow: 0 0 25px rgba(66, 99, 235, 0.2);
-  }
-
-  /* Gradiente de fundo escuro */
-  .midnight-gradient {
-    background: linear-gradient(135deg, #000000 0%, #050a18 100%);
+  /* Subtle glow effect */
+  .minimal-glow {
+    box-shadow: 0 0 15px rgba(66, 99, 235, 0.1);
   }
   
-  /* Estilo para cards com efeito de vidro */
-  .midnight-card {
-    background: linear-gradient(135deg, rgba(5, 10, 24, 0.6) 0%, rgba(13, 22, 49, 0.4) 100%);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(66, 99, 235, 0.1);
-  }
-  
-  /* Efeito de vidro para elementos transparentes */
+  /* Glass effect */
   .glass-effect {
-    background: rgba(5, 10, 24, 0.3);
+    background: rgba(17, 17, 17, 0.3);
     backdrop-filter: blur(8px);
     border: 1px solid rgba(66, 99, 235, 0.1);
   }
   
-  /* Otimização para camadas com paralaxe */
-  .parallax-layer {
-    will-change: transform;
-  }
-  
-  /* Interatividade para elementos hover */
-  .interactive-hover {
+  /* Simple hover interaction */
+  .simple-hover {
     transition: all 0.3s ease;
   }
-  .interactive-hover:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px -5px rgba(66, 99, 235, 0.25);
+  
+  .simple-hover:hover {
+    transform: translateY(-2px);
   }
 }

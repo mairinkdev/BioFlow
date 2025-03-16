@@ -12,10 +12,11 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata = {
-  title: 'BioFlow | Links Personalizados',
-  description: 'Um site pessoal de bio-link customizado, com animações fluidas e interações únicas.',
+  title: 'BioFlow | Your Digital Presence',
+  description: 'Mark your digital presence with ease. A clean and minimal bio link site.',
   icons: {
-    icon: '/favicon.ico',
+    icon: '/images/BioFlow-LogoBG.ico',
+    apple: '/images/BioFlow-LogoBG.png',
   },
 }
 
@@ -25,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="pt-BR" className="scroll-smooth">
+    <html lang="en" className="scroll-smooth">
       <body className={`${inter.variable} ${jetbrainsMono.variable} antialiased min-h-screen flex flex-col`}>
         <main className="flex-grow">
           {children}

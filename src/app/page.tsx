@@ -1,8 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { AnimatedBackground } from '@/components/ui/AnimatedBackground'
-import { ParallaxBackground } from '@/components/ui/ParallaxBackground'
 import { Profile } from '@/components/ui/Profile'
 import { LinkCard } from '@/components/ui/LinkCard'
 import { AudioControls } from '@/components/ui/AudioControls'
@@ -12,7 +11,6 @@ import {
   LinkedInIcon, 
   GitHubIcon, 
   InstagramIcon, 
-  TwitterIcon, 
   YouTubeIcon, 
   MailIcon, 
   WebsiteIcon 
@@ -24,29 +22,30 @@ const iconMap: Record<string, React.ReactNode> = {
   linkedin: <LinkedInIcon />,
   github: <GitHubIcon />,
   instagram: <InstagramIcon />,
-  twitter: <TwitterIcon />,
   youtube: <YouTubeIcon />,
   mail: <MailIcon />,
   website: <WebsiteIcon />,
 }
 
 export default function Home() {
-  const [activeCategory, setActiveCategory] = useState('all')
+  const [mounted, setMounted] = useState(false);
 
-  // Filter links by category
-  const filteredLinks = activeCategory === 'all' 
-    ? socialLinks 
-    : activeCategory === 'social' 
-      ? socialLinks.slice(0, 4) 
-      : socialLinks.slice(4)
+  // Ensure hydration
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <AudioProvider>
-      <div className="min-h-screen">
-        <ParallaxBackground />
+      <div className="min-h-screen flex flex-col items-center justify-start py-10 px-4 relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#000000] to-[#050a18] -z-10" />
         <AnimatedBackground />
         
-        <div className="container max-w-4xl mx-auto pt-16 pb-8 px-4 relative z-20">
+        <div className="w-full max-w-md mx-auto z-20 flex flex-col items-center">
           {/* Profile */}
           <Profile 
             name={profileData.name}
@@ -55,67 +54,29 @@ export default function Home() {
             avatarUrl={profileData.avatarUrl}
           />
           
-          {/* Category filters */}
+          {/* Links */}
+          <div className="w-full mt-6 space-y-3">
+            {socialLinks.map((link, index) => (
+              <LinkCard
+                key={index}
+                title={link.title}
+                url={link.url}
+                description={link.description}
+                color={link.color}
+                icon={iconMap[link.icon]}
+                index={index}
+              />
+            ))}
+          </div>
+
           <motion.div 
-            className="mb-10 flex justify-center gap-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7 }}
+            className="mt-10 text-center text-xs text-white/50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.5 }}
           >
-            <motion.button
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.97 }}
-              transition={{ type: "spring", stiffness: 300, damping: 15 }}
-              onClick={() => setActiveCategory('all')}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium glass-effect ${activeCategory === 'all' ? 'bg-primary text-white' : 'bg-card/50 text-muted-foreground hover:bg-card/80'}`}
-            >
-              All
-            </motion.button>
-            <motion.button
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.97 }}
-              transition={{ type: "spring", stiffness: 300, damping: 15 }}
-              onClick={() => setActiveCategory('social')}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium glass-effect ${activeCategory === 'social' ? 'bg-primary text-white' : 'bg-card/50 text-muted-foreground hover:bg-card/80'}`}
-            >
-              Social Media
-            </motion.button>
-            <motion.button
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.97 }}
-              transition={{ type: "spring", stiffness: 300, damping: 15 }}
-              onClick={() => setActiveCategory('content')}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium glass-effect ${activeCategory === 'content' ? 'bg-primary text-white' : 'bg-card/50 text-muted-foreground hover:bg-card/80'}`}
-            >
-              Content & Contact
-            </motion.button>
+            <p>© {new Date().getFullYear()} {profileData.name}</p>
           </motion.div>
-          
-          {/* Links - With animated transitions */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeCategory}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="mt-6"
-            >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {filteredLinks.map((link, index) => (
-                  <LinkCard
-                    key={`${activeCategory}-${index}`}
-                    title={link.title}
-                    url={link.url}
-                    description={link.description}
-                    color={link.color}
-                    icon={iconMap[link.icon]}
-                    index={index}
-                  />
-                ))}
-              </div>
-            </motion.div>
-          </AnimatePresence>
         </div>
         
         <AudioControls />

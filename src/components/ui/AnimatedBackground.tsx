@@ -2,24 +2,29 @@
 
 import { useEffect, useRef } from 'react'
 
-// Remover o gsap se não estiver utilizando
-// import { gsap } from 'gsap'
-
+/**
+ * AnimatedBackground.tsx
+ * 
+ * Simplified background animation with minimal particles and subtle connections.
+ * Redesigned to match the clean aesthetic of e-z.bio.
+ * 
+ * @version 2.0.0
+ */
 export function AnimatedBackground() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   
   useEffect(() => {
     const canvas = canvasRef.current
-    if (!canvas) return // Verifica se o canvas é null antes de acessá-lo
+    if (!canvas) return
     const ctx = canvas.getContext('2d')
     if (!ctx) return
     
     let particles: Particle[] = []
     let animationFrameId: number
     
-    // Configurações - reduzindo a quantidade de partículas para um visual mais espaçado
-    const particleCount = 30
-    const colors = ['#8b5cf6', '#a78bfa', '#2dd4bf', '#f472b6']
+    // Minimal particle configuration
+    const particleCount = 15
+    const colors = ['#4263eb', '#4f46e5']
     
     class Particle {
       x: number
@@ -33,18 +38,17 @@ export function AnimatedBackground() {
       constructor(x: number, y: number) {
         this.x = x
         this.y = y
-        this.size = Math.random() * 3 + 0.5 // Partículas menores
-        this.speedX = Math.random() * 0.5 - 0.25 // Movimentos mais lentos
-        this.speedY = Math.random() * 0.5 - 0.25
+        this.size = Math.random() * 2 + 0.3 // Smaller particles
+        this.speedX = Math.random() * 0.3 - 0.15 // Slower movement
+        this.speedY = Math.random() * 0.3 - 0.15
         this.color = colors[Math.floor(Math.random() * colors.length)]
-        this.alpha = Math.random() * 0.6 + 0.2 // Maior variação de opacidade
+        this.alpha = Math.random() * 0.4 + 0.1 // Lower opacity
       }
       
       update() {
         this.x += this.speedX
         this.y += this.speedY
         
-        // Garantindo que canvas não é nulo antes de acessar suas propriedades
         if (this.x < 0 || (canvas && this.x > canvas.width)) {
           this.speedX = -this.speedX
         }
@@ -61,19 +65,11 @@ export function AnimatedBackground() {
         ctx.beginPath()
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
         ctx.fill()
-        
-        // Adiciona um pequeno brilho ao redor das partículas
-        ctx.globalAlpha = this.alpha * 0.3
-        ctx.beginPath()
-        ctx.arc(this.x, this.y, this.size * 2, 0, Math.PI * 2)
-        ctx.fill()
-        
         ctx.globalAlpha = 1
       }
     }
     
     const init = () => {
-      // Canvas já foi verificado no início do useEffect, mas TypeScript precisa desta validação
       if (!canvas) return
       
       canvas.width = window.innerWidth
@@ -96,7 +92,7 @@ export function AnimatedBackground() {
         particle.draw()
       })
       
-      // Criar conexões entre partículas próximas
+      // Subtle connections
       connectParticles()
       
       animationFrameId = requestAnimationFrame(animate)
@@ -104,7 +100,7 @@ export function AnimatedBackground() {
     
     const connectParticles = () => {
       if (!ctx) return
-      const maxDistance = 200 // Aumentando a distância de conexão
+      const maxDistance = 150
       
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
@@ -113,9 +109,9 @@ export function AnimatedBackground() {
           const distance = Math.sqrt(dx * dx + dy * dy)
           
           if (distance < maxDistance) {
-            const opacity = 1 - distance / maxDistance
-            ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`
-            ctx.lineWidth = 0.5
+            const opacity = (1 - distance / maxDistance) * 0.15 // Very subtle connections
+            ctx.strokeStyle = `rgba(100, 116, 230, ${opacity})`
+            ctx.lineWidth = 0.3
             ctx.beginPath()
             ctx.moveTo(particles[i].x, particles[i].y)
             ctx.lineTo(particles[j].x, particles[j].y)
@@ -125,13 +121,21 @@ export function AnimatedBackground() {
       }
     }
     
+    // Initialize and handle window resize
     init()
     animate()
     
+    const handleResize = () => {
+      init()
+    }
+    
+    window.addEventListener('resize', handleResize)
+    
     return () => {
       cancelAnimationFrame(animationFrameId)
+      window.removeEventListener('resize', handleResize)
     }
   }, [])
   
-  return <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full z-0" />
+  return <canvas ref={canvasRef} className="fixed top-0 left-0 w-full h-full -z-5 opacity-40" />
 }

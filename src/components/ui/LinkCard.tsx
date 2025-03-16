@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useRef } from 'react'
-import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion'
+import { useState, useRef, useEffect } from 'react'
+import { motion, AnimatePresence, useSpring, useAnimation } from 'framer-motion'
 import Link from 'next/link'
 
 interface LinkCardProps {
@@ -13,182 +13,263 @@ interface LinkCardProps {
   index: number
 }
 
-export function LinkCard({ title, url, icon, description, color = 'bg-primary', index }: LinkCardProps) {
-  const [isHovered, setIsHovered] = useState(false)
-  const [showCopyMessage, setShowCopyMessage] = useState(false)
-  const cardRef = useRef<HTMLDivElement>(null)
+/**
+ * LinkCard.tsx
+ * 
+ * Simple and clean link card component styled like e-z.bio.
+ * With super smooth 60/240fps animations.
+ * 
+ * @version 2.1.0
+ */
+export function LinkCard({ title, url, icon, description, color = 'bg-blue-600', index }: LinkCardProps) {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isPressing, setIsPressing] = useState(false);
+  const [showCopyMessage, setShowCopyMessage] = useState(false);
+  const linkRef = useRef<HTMLAnchorElement>(null);
+  const iconControls = useAnimation();
   
-  // Configuração do efeito 3D de movimento
-  const x = useMotionValue(0)
-  const y = useMotionValue(0)
+  // Configurações de spring para animações fluidas
+  const springConfig = { 
+    stiffness: 400, 
+    damping: 30, 
+    mass: 0.8 
+  };
   
-  const mouseX = useSpring(x, { stiffness: 150, damping: 15 })
-  const mouseY = useSpring(y, { stiffness: 150, damping: 15 })
+  // Animações refinadas para entradas suaves
+  const enterAnimation = {
+    opacity: 0, 
+    y: 20,
+    scale: 0.98
+  };
   
-  const rotateX = useTransform(mouseY, [-100, 100], [10, -10])
-  const rotateY = useTransform(mouseX, [-100, 100], [-10, 10])
-  const brightness = useTransform(mouseY, [-100, 100], [1.1, 0.9])
+  const activeAnimation = {
+    opacity: 1, 
+    y: 0,
+    scale: 1
+  };
   
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current || !isHovered) return
-    
-    const rect = cardRef.current.getBoundingClientRect()
-    const centerX = rect.left + rect.width / 2
-    const centerY = rect.top + rect.height / 2
-    
-    const offsetX = e.clientX - centerX
-    const offsetY = e.clientY - centerY
-    
-    x.set(offsetX)
-    y.set(offsetY)
-  }
-  
-  const handleMouseLeave = () => {
-    x.set(0)
-    y.set(0)
-    setIsHovered(false)
-  }
-
   const handleEmailClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    // Verificar se o título é "Email"
+    // Check if this is the email link
     if (title === 'Email') {
-      e.preventDefault() // Impedir comportamento padrão do link
+      e.preventDefault();
       
-      // Extrair o email do mailto: url
-      const email = url.replace('mailto:', '')
+      // Extract email from mailto: url
+      const email = url.replace('mailto:', '');
       
-      // Copiar o email para a área de transferência
+      // Copy to clipboard
       navigator.clipboard.writeText(email)
         .then(() => {
-          // Mostrar mensagem de sucesso
-          setShowCopyMessage(true)
+          setShowCopyMessage(true);
           
-          // Esconder a mensagem após 3 segundos
+          // Hide message after delay
           setTimeout(() => {
-            setShowCopyMessage(false)
-          }, 3000)
+            setShowCopyMessage(false);
+          }, 3000);
         })
         .catch(err => {
-          console.error('Falha ao copiar: ', err)
-        })
+          console.error('Failed to copy: ', err);
+        });
     }
-  }
+  };
+
+  // Rastreador de posição do mouse para o efeito de brilho
+  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (linkRef.current) {
+      const rect = linkRef.current.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      
+      linkRef.current.style.setProperty('--mouse-x', `${x}%`);
+      linkRef.current.style.setProperty('--mouse-y', `${y}%`);
+    }
+  };
+
+  // Efeito de wiggle para o ícone quando hover
+  useEffect(() => {
+    if (isHovered) {
+      // Inicia sequência de animação quando mouse sobre o botão
+      const wiggleAnimation = async () => {
+        await iconControls.start({
+          rotate: -2,
+          transition: { type: "spring", stiffness: 300, damping: 10 }
+        });
+        await iconControls.start({
+          rotate: 2,
+          transition: { type: "spring", stiffness: 300, damping: 10 }
+        });
+        await iconControls.start({
+          rotate: 0,
+          transition: { type: "spring", stiffness: 300, damping: 10 }
+        });
+      };
+      
+      wiggleAnimation();
+    } else {
+      // Retorna à posição normal quando mouse sai
+      iconControls.start({
+        rotate: 0,
+        transition: { type: "spring", ...springConfig }
+      });
+    }
+  }, [isHovered, iconControls, springConfig]);
 
   return (
-    <motion.div
-      ref={cardRef}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: 0.1 * index, ease: 'easeOut' }}
-      style={{ 
-        rotateX: isHovered ? rotateX : 0, 
-        rotateY: isHovered ? rotateY : 0, 
-        filter: isHovered ? `brightness(${brightness})` : "brightness(1)",
-        perspective: 1200,
-        transformStyle: 'preserve-3d'
-      }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-      className="relative cursor-pointer interactive-hover"
-    >
-      <Link 
-        href={url} 
-        target="_blank" 
-        rel="noopener noreferrer" 
-        className={`block relative overflow-hidden ${color} rounded-xl p-5 shadow-lg hover:shadow-xl transition-all duration-300 midnight-glow midnight-card`}
-        onClick={handleEmailClick}
+    <div className="relative">
+      <motion.div
+        initial={enterAnimation}
+        animate={activeAnimation}
+        transition={{ 
+          type: "spring", 
+          ...springConfig,
+          delay: 0.08 * index 
+        }}
+        className="relative"
       >
-        <motion.div
-          animate={{ 
-            opacity: isHovered ? 1 : 0,
-            scale: isHovered ? 1 : 0.8,
+        <Link 
+          href={url} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          onClick={handleEmailClick}
+          className="block relative"
+          onMouseDown={() => setIsPressing(true)}
+          onMouseUp={() => setIsPressing(false)}
+          onMouseLeave={() => {
+            setIsPressing(false);
+            setIsHovered(false);
           }}
-          transition={{ duration: 0.2 }}
-          className="absolute -inset-0.5 rounded-xl bg-gradient-to-r from-primary-light/20 to-secondary/20 z-0"
-          style={{ transformStyle: 'preserve-3d', transform: 'translateZ(-1px)' }}
-        />
-        
-        <div className="relative z-10 flex items-center gap-4">
-          <motion.div 
-            animate={{
-              scale: isHovered ? 1.1 : 1,
-              rotateZ: isHovered ? [0, -10, 10, 0] : 0,
-            }}
-            transition={{ 
-              duration: 0.5, 
-              type: isHovered ? "tween" : "spring",
-              ease: "easeInOut"
-            }}
-            className="text-white text-2xl bg-white/10 p-3 rounded-full backdrop-blur-sm"
-          >
-            {icon}
-          </motion.div>
-          <div>
-            <h3 className="text-lg font-bold text-white">{title}</h3>
-            {description && (
-              <motion.p 
-                animate={{ 
-                  opacity: isHovered ? 1 : 0.8,
-                  y: isHovered ? 0 : 2,
-                }}
-                transition={{ duration: 0.3 }}
-                className="text-sm text-white/80"
-              >
-                {description}
-              </motion.p>
-            )}
-          </div>
-        </div>
-
-        <motion.div 
-          animate={{ 
-            opacity: isHovered ? 1 : 0,
-            scale: isHovered ? 1 : 1.5 
-          }}
-          transition={{ duration: 0.3 }}
-          className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 pointer-events-none"
-        />
-        
-        <motion.div
-          animate={{ 
-            x: isHovered ? ['100%', '0%'] : '100%',
-          }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="absolute bottom-0 left-0 h-[2px] w-full bg-gradient-to-r from-primary-light/60 to-secondary/60"
-        />
-        
-        <motion.div
-          animate={{
-            opacity: isHovered ? 1 : 0,
-            y: isHovered ? 0 : 10,
-            x: isHovered ? 0 : -20,
-          }}
-          transition={{ duration: 0.3, type: "spring" }}
-          className="absolute top-4 right-4 text-xl text-white/70"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseMove={handleMouseMove}
+          onTouchStart={() => setIsPressing(true)}
+          onTouchEnd={() => setIsPressing(false)}
+          ref={linkRef}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="7" y1="17" x2="17" y2="7"></line>
-            <polyline points="7 7 17 7 17 17"></polyline>
-          </svg>
-        </motion.div>
-      </Link>
+          <motion.div 
+            className={`${color} w-full py-3 px-4 rounded-lg flex items-center`}
+            initial={{ boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)' }}
+            animate={{ 
+              y: isHovered ? (isPressing ? 0 : -3) : 0,
+              scale: isPressing ? 0.98 : 1,
+              boxShadow: isHovered 
+                ? isPressing 
+                  ? '0 2px 4px rgba(0, 0, 0, 0.2)' 
+                  : '0 6px 16px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1)' 
+                : '0 2px 6px rgba(0, 0, 0, 0.1)',
+              filter: isHovered ? 'brightness(1.05)' : 'brightness(1)'
+            }}
+            transition={{
+              type: "spring",
+              ...springConfig,
+              y: { type: "spring", ...springConfig },
+              scale: { type: "spring", ...springConfig },
+              boxShadow: { type: "spring", ...springConfig },
+              filter: { duration: 0.15 }
+            }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <motion.div 
+              className="text-white mr-3"
+              animate={iconControls}
+              initial={{ scale: 1, rotate: 0 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {icon}
+            </motion.div>
+            
+            <div className="flex-1">
+              <motion.div 
+                className="font-medium text-white"
+                animate={{ 
+                  x: isHovered ? 2 : 0
+                }}
+                transition={{ 
+                  type: "spring", 
+                  stiffness: 500, 
+                  damping: 30 
+                }}
+              >
+                {title}
+              </motion.div>
+              
+              {description && (
+                <motion.div 
+                  className="text-xs text-white/70 mt-0.5 line-clamp-1"
+                  animate={{ 
+                    opacity: isHovered ? 0.9 : 0.7
+                  }}
+                  transition={{ duration: 0.15 }}
+                >
+                  {description}
+                </motion.div>
+              )}
+            </div>
+            
+            <motion.div 
+              className="w-4 h-4 text-white opacity-50"
+              animate={{ 
+                x: isHovered ? 4 : 0,
+                opacity: isHovered ? 0.9 : 0.5,
+                scale: isHovered ? 1.1 : 1
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 500,
+                damping: 30
+              }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </motion.div>
+          </motion.div>
+          
+          {/* Efeito de brilho no hover */}
+          <AnimatePresence>
+            {isHovered && (
+              <motion.div 
+                className="absolute inset-0 rounded-lg pointer-events-none"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                style={{
+                  background: 'radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 60%)',
+                }}
+              />
+            )}
+          </AnimatePresence>
+        </Link>
+      </motion.div>
 
-      {/* Mensagem de cópia para área de transferência */}
+      {/* Copy message com animação melhorada */}
       <AnimatePresence>
         {showCopyMessage && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full mt-[-10px] bg-gradient-to-r from-primary to-secondary py-2 px-4 rounded-lg shadow-xl z-50"
+            initial={{ opacity: 0, y: -10, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -5, scale: 0.95 }}
+            transition={{ 
+              type: "spring", 
+              stiffness: 500, 
+              damping: 30 
+            }}
+            className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full mt-[-10px] bg-black py-2 px-4 rounded-lg shadow-lg z-50"
           >
-            <div className="text-white text-sm font-medium">Email copied to clipboard!</div>
+            <motion.div 
+              className="text-white text-xs font-medium"
+              animate={{ 
+                opacity: [1, 0.8, 1]
+              }}
+              transition={{ 
+                duration: 1.5, 
+                repeat: Infinity,
+                repeatType: "mirror" 
+              }}
+            >
+              Email copied to clipboard!
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
-  )
+    </div>
+  );
 } 
