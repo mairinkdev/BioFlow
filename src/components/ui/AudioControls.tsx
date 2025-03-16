@@ -331,20 +331,21 @@ export function AudioControls() {
                   <motion.div 
                     className="absolute h-1 top-0 left-0 bg-blue-600/60 rounded-l-lg pointer-events-none"
                     style={{ width: `${volume * 100}%` }}
-                    animate={{ opacity: [0.6, 0.8, 0.6] }}
-                    transition={{ duration: 2, repeat: Infinity }}
+                    animate={{ opacity: 0.7 }}
+                    transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
                   />
                 </motion.div>
                 
                 <motion.div 
                   className="text-xs text-white/60"
                   animate={{ 
-                    opacity: [0.6, 1, 0.6],
-                    scale: volume > 0 ? [1, 1.02, 1] : 1
+                    opacity: volume > 0 ? 0.8 : 0.6,
+                    scale: volume > 0 ? 1.02 : 1
                   }}
                   transition={{ 
                     duration: volume > 0 ? 2 : 0.5, 
                     repeat: volume > 0 ? Infinity : 0,
+                    repeatType: "reverse"
                   }}
                 >
                   {Math.round(volume * 100)}%
@@ -361,8 +362,12 @@ export function AudioControls() {
                     className="mt-2 pt-2 border-t border-white/10 text-xs text-white/70 text-center overflow-hidden"
                   >
                     <motion.span
-                      animate={{ opacity: [0.7, 1, 0.7] }}
-                      transition={{ duration: 2, repeat: Infinity }}
+                      animate={{ opacity: 0.8 }}
+                      transition={{ 
+                        duration: 2, 
+                        repeat: Infinity, 
+                        repeatType: "reverse" 
+                      }}
                     >
                       BioFlow FM
                     </motion.span>

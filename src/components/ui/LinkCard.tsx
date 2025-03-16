@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
-import { motion, AnimatePresence, useSpring, useAnimation } from 'framer-motion'
+import { useState, useRef, useEffect, useMemo } from 'react'
+import { motion, AnimatePresence, useAnimation } from 'framer-motion'
 import Link from 'next/link'
 
 interface LinkCardProps {
@@ -28,12 +28,12 @@ export function LinkCard({ title, url, icon, description, color = 'bg-blue-600',
   const linkRef = useRef<HTMLAnchorElement>(null);
   const iconControls = useAnimation();
   
-  // Configurações de spring para animações fluidas
-  const springConfig = { 
+  // Configurações de spring para animações fluidas com useMemo
+  const springConfig = useMemo(() => ({ 
     stiffness: 400, 
     damping: 30, 
     mass: 0.8 
-  };
+  }), []);
   
   // Animações refinadas para entradas suaves
   const enterAnimation = {

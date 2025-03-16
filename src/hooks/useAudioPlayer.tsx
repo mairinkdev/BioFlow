@@ -86,7 +86,12 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   useEffect(() => {
     // Create AudioContext for better mobile support
     if (typeof window !== 'undefined' && !audioContextRef.current) {
-      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      // Definir o tipo para webkitAudioContext
+      interface WindowWithWebkitAudio extends Window {
+        webkitAudioContext?: typeof AudioContext;
+      }
+      
+      const AudioContextClass = window.AudioContext || (window as WindowWithWebkitAudio).webkitAudioContext;
       if (AudioContextClass) {
         audioContextRef.current = new AudioContextClass();
       }

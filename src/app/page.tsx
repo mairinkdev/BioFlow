@@ -15,7 +15,7 @@ import {
   MailIcon, 
   WebsiteIcon 
 } from '@/components/ui/Icons'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 
 // Icon mapping for links
 const iconMap: Record<string, React.ReactNode> = {
