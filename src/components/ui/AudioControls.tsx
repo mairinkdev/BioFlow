@@ -251,8 +251,8 @@ export function AudioControls() {
               onHoverStart={() => setIsVolumeVisible(true)}
               onHoverEnd={() => setIsVolumeVisible(false)}
               whileHover={{ 
-                boxShadow: "0 5px 15px rgba(0, 0, 0, 0.1)",
-                borderColor: "rgba(66, 99, 235, 0.25)"
+                boxShadow: "0 5px 15px #0000001a",
+                borderColor: "#4263eb40"
               }}
             >
               <div className="flex items-center space-x-2">

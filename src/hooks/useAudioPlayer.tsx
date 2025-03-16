@@ -131,7 +131,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           if (audioContextRef.current.state !== 'closed') {
             audioContextRef.current.close().catch(() => {});
           }
-        } catch (error) {
+        } catch (_) {
           // Ignorar erros na limpeza
         }
         audioContextRef.current = null;
