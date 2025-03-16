@@ -1,0 +1,19 @@
+{
+  "name": "BioFlow",
+  "short_name": "BioFlow",
+  "icons": [
+    {
+      "src": "/images/BioFlow-LogoBG.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/BioFlow-LogoBG.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#4263eb",
+  "background_color": "#050a18",
+  "display": "standalone"
+} 

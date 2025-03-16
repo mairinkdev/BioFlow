@@ -11,13 +11,22 @@ const jetbrainsMono = JetBrains_Mono({
   variable: '--font-jetbrains-mono',
 })
 
+export const viewport = {
+  themeColor: '#4263eb',
+}
+
 export const metadata = {
   title: 'BioFlow | Your Digital Presence',
   description: 'Mark your digital presence with ease. A clean and minimal bio link site.',
   icons: {
-    icon: '/images/BioFlow-LogoBG.ico',
-    apple: '/images/BioFlow-LogoBG.png',
+    icon: [
+      { url: '/images/BioFlow-LogoBG.png', sizes: '32x32' },
+    ],
+    apple: [
+      { url: '/images/BioFlow-LogoBG.png', sizes: '180x180', type: 'image/png' },
+    ],
   },
+  manifest: '/site.webmanifest',
 }
 
 export default function RootLayout({
@@ -27,6 +36,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
+      <head>
+        <link rel="icon" href="/images/BioFlow-LogoBG.png" />
+      </head>
       <body className={`${inter.variable} ${jetbrainsMono.variable} antialiased min-h-screen flex flex-col`}>
         <main className="flex-grow">
           {children}
