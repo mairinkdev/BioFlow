@@ -70,8 +70,8 @@ export function AudioControls() {
           className="block w-14 h-14 rounded-full bg-black border border-blue-600/30 shadow-lg relative overflow-hidden"
           whileHover={{ 
             scale: 1.05, 
-            borderColor: "rgba(66, 99, 235, 0.6)",
-            boxShadow: "0 0 15px rgba(66, 99, 235, 0.2)" 
+            borderColor: "#4263eb99",
+            boxShadow: "0 0 15px #4263eb33"
           }}
           whileTap={{ scale: 0.97 }}
           animate={{ 
@@ -84,13 +84,14 @@ export function AudioControls() {
           {/* Background with animated audio wave */}
           <div className="absolute inset-0 flex items-center justify-center">
             <motion.div 
-              className="absolute inset-0 bg-gradient-to-r from-[#121212] to-[#050a18]"
+              className={`absolute inset-0 ${
+                isHovered 
+                  ? "bg-gradient-radial from-[#121212] to-[#050a18]" 
+                  : "bg-gradient-to-r from-[#121212] to-[#050a18]"
+              }`}
               initial={{ opacity: 0.9 }}
               animate={{ 
-                opacity: isPlaying ? 0.95 : 0.9,
-                background: isHovered 
-                  ? "radial-gradient(circle, rgba(18, 18, 18, 1) 0%, rgba(5, 10, 24, 1) 100%)" 
-                  : "linear-gradient(90deg, rgba(18, 18, 18, 1) 0%, rgba(5, 10, 24, 1) 100%)"
+                opacity: isPlaying ? 0.95 : 0.9
               }}
               transition={{ 
                 duration: 2, 
@@ -221,14 +222,13 @@ export function AudioControls() {
           
           {/* External circular glow with improved pulsating effect */}
           <motion.div 
-            className="absolute -inset-1 rounded-full"
-            animate={{ 
-              boxShadow: isPlaying 
-                ? "0 0 0 2px rgba(66, 99, 235, 0.3), 0 0 15px 0 rgba(66, 99, 235, 0.25)"
-                : isHovered
-                  ? "0 0 0 1px rgba(66, 99, 235, 0.3), 0 0 12px 0 rgba(66, 99, 235, 0.2)"
-                  : "0 0 0 1px rgba(66, 99, 235, 0.2), 0 0 10px 0 rgba(66, 99, 235, 0.1)" 
-            }}
+            className={`absolute -inset-1 rounded-full ${
+              isPlaying 
+                ? "shadow-glow-playing" 
+                : isHovered 
+                  ? "shadow-glow-hover" 
+                  : "shadow-glow-normal"
+            }`}
             transition={{ 
               duration: 2, 
               repeat: isPlaying ? Infinity : 0,

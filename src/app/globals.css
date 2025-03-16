@@ -76,3 +76,16 @@
     transform: translateY(-2px);
   }
 }
+
+/* Utilitários adicionais */
+.shadow-glow-playing {
+  box-shadow: 0 0 0 2px #4263eb4d, 0 0 15px 0 #4263eb40;
+}
+
+.shadow-glow-hover {
+  box-shadow: 0 0 0 1px #4263eb4d, 0 0 12px 0 #4263eb33;
+}
+
+.shadow-glow-normal {
+  box-shadow: 0 0 0 1px #4263eb33, 0 0 10px 0 #4263eb1a;
+}

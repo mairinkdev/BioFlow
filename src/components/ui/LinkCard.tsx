@@ -145,15 +145,15 @@ export function LinkCard({ title, url, icon, description, color = 'bg-blue-600',
         >
           <motion.div 
             className={`${color} w-full py-3 px-4 rounded-lg flex items-center`}
-            initial={{ boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)' }}
+            initial={{ boxShadow: '0 2px 6px #00000029' }}
             animate={{ 
               y: isHovered ? (isPressing ? 0 : -3) : 0,
               scale: isPressing ? 0.98 : 1,
               boxShadow: isHovered 
                 ? isPressing 
-                  ? '0 2px 4px rgba(0, 0, 0, 0.2)' 
-                  : '0 6px 16px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1)' 
-                : '0 2px 6px rgba(0, 0, 0, 0.1)',
+                  ? '0 2px 4px #00000033' 
+                  : '0 6px 16px #00000026, 0 2px 4px #0000001a' 
+                : '0 2px 6px #00000029',
               filter: isHovered ? 'brightness(1.05)' : 'brightness(1)'
             }}
             transition={{
@@ -226,13 +226,16 @@ export function LinkCard({ title, url, icon, description, color = 'bg-blue-600',
           <AnimatePresence>
             {isHovered && (
               <motion.div 
-                className="absolute inset-0 rounded-lg pointer-events-none"
+                className="absolute inset-0 rounded-lg pointer-events-none bg-white/0"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 0.1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
                 style={{
-                  background: 'radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 60%)',
+                  backgroundImage: 'radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), #ffffff 0%, transparent 60%)',
+                  backgroundSize: '200% 200%',
+                  backgroundPosition: 'center',
+                  mixBlendMode: 'overlay'
                 }}
               />
             )}
