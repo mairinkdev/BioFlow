@@ -25,7 +25,7 @@ interface AudioContextType {
 }
 
 // Lista de faixas disponíveis (apenas uma por enquanto)
-const defaultTracks = ['/audio/chill.mp3']
+const defaultTracks = ['/audio/lofi.mp3']
 
 // Criação do contexto
 const AudioContext = createContext<AudioContextType | undefined>(undefined)
